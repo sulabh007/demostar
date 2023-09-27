@@ -27,7 +27,7 @@
       hue = 217,
       stars = [],
       count = 0,
-      maxStars = 14;
+      maxStars = 144;
     
    
     var canvas2 = document.createElement("canvas"),
@@ -77,7 +77,6 @@
       this.timePassed = random(0, maxStars);
       this.speed = random(this.orbitRadius) / 500000;
       this.alpha = random(2, 10) / 10;
-    
       count++;
       stars[count] = this;
     };
@@ -148,13 +147,13 @@
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     //console.log(circles)
                     circles.forEach(function(circle) {
-                        if (circle.endAngle < Math.PI * 2) {
+                        if (circle.startAngle > 0) {
                             drawCircleSegment(circle.startAngle, circle.endAngle, circle.radius);
-                            circle.endAngle += Math.PI / 180; // Increase angle incrementally
+                            circle.startAngle -= Math.PI / 180; // Increase angle incrementally
                         }
                     });
 
-                    if (circles.some(circle => circle.endAngle < Math.PI * 2)) {
+                    if (circles.some(circle => circle.startAngle < Math.PI * 2)) {
                         requestAnimationFrame(drawFrame);
                     }
                 }
@@ -168,7 +167,8 @@
                     drawing = true;
                     console.log(trailStars.length)
                     for(let j=0;j<trailStars.length;j++){
-                      circles.push({ startAngle: 0, endAngle: 0, radius: trailStars[j].orbitRadius })
+                      
+                      circles.push({ startAngle: Math.PI*2, endAngle: Math.PI*2, radius: trailStars[j].orbitRadius })
                     }
                     // Define an array of circle parameters (angle, radius)
                     console.log(circles)
