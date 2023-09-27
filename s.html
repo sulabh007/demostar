@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Animating Multiple Circles (Clockwise)</title>
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <button id="startButton">Start Drawing</button>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+
+            // Set canvas size to fill the screen
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Calculate center of the screen
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+
+            // Variable to track if the animation is in progress
+            var drawing = false;
+
+            // Function to draw a circle segment
+            function drawCircleSegment(startAngle, endAngle, radius) {
+                ctx.beginPath();
+
+                // Draw a circle segment
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Function to animate circle drawing
+            function animateCircleDrawing(circles) {
+                function drawFrame() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    circles.forEach(function(circle) {
+                        if (circle.endAngle < Math.PI * 2) {
+                            drawCircleSegment(circle.startAngle, circle.endAngle, circle.radius);
+                            circle.endAngle += Math.PI / 180; // Increase angle incrementally
+                        }
+                    });
+
+                    if (circles.some(circle => circle.endAngle < Math.PI * 2)) {
+                        requestAnimationFrame(drawFrame);
+                    }
+                }
+
+                drawFrame();
+            }
+
+            // Event listener for the button click
+            document.getElementById('startButton').addEventListener('click', function() {
+                if (!drawing) {
+                    drawing = true;
+
+                    // Define an array of circle parameters (angle, radius)
+                    var circles = [
+                        { startAngle: 0, endAngle: 0, radius: 100 },
+                        { startAngle: 0, endAngle: 0, radius: 75 },
+                        { startAngle: 0, endAngle: 0, radius: 50 }
+                        // Add more circles with different angles and radii as needed
+                    ];
+
+                    animateCircleDrawing(circles);
+                }
+            });
+
+            // Event listener for window resize
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        });
+    </script>
+</body>
+</html>
